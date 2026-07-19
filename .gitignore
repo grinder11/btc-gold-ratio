@@ -1,0 +1,6 @@
+.env
+data.js
+history.csv
+cron.log
+__pycache__/
+venv/
