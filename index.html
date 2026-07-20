@@ -29,8 +29,17 @@
     background-size: cover; background-position: center;
     opacity: 1;                                 /* was 0.35 — show it fully now */
   }
-  .eyebrow { color: var(--muted); letter-spacing: 0.15em;
-             text-transform: uppercase; font-size: 0.75rem; }
+  .eyebrow {
+    color: var(--ink);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--above);      /* neon accent rule under the title */
+  }
   .state {
     font-size: clamp(3rem, 12vw, 5.5rem); font-weight: 700;
     line-height: 1.05; margin: 0.5rem 0; text-transform: uppercase;
@@ -38,10 +47,10 @@
   }
   .state.above { color: var(--above); }
   .state.below { color: var(--below); }
-  .sub { color: var(--muted); font-size: 0.95rem; }
+  .sub { color: var(--ink); font-size: 0.95rem; }
   .figures { display: flex; justify-content: center; gap: 2.5rem;
              margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #30363d; }
-  .figure .label { color: var(--muted); font-size: 0.7rem;
+  .figure .label { color: var(--ink); font-size: 0.7rem;
                    letter-spacing: 0.1em; text-transform: uppercase; }
   .figure .value { font-size: 1.6rem; margin-top: 0.25rem; }
   .stamp { color: var(--muted); font-size: 0.75rem; margin-top: 1.5rem; }
