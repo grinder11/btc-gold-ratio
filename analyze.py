@@ -70,10 +70,21 @@ latest_ratio = ratios[-1]
 latest_ma = ma[-1]
 state = "above" if latest_ratio > latest_ma else "below"
 
+def list_art(state):
+    folder = os.path.join("art", state)
+    if not os.path.isdir(folder):
+        return []
+    exts = (".png", ".jpg", ".jpeg", ".webp", ".gif")
+    return sorted(f"{folder}/{name}" for name in os.listdir(folder)
+                  if name.lower().endswith(exts))
+
+art = {"above": list_art("above"), "below": list_art("below")}
+
 output = {
     "updated": days[-1],
     "ma_window": MA_WINDOW,
     "latest": {"ratio": latest_ratio, "ma": latest_ma, "state": state},
+    "art": art,
     "series": [{"date": d, "ratio": r, "ma": m}
                for d, r, m in zip(days, ratios, ma)],
 }
