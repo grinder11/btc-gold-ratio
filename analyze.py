@@ -2,6 +2,7 @@ import csv
 import os
 import requests
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 API_KEY = os.getenv("TWELVE_DATA_KEY")
@@ -51,3 +52,33 @@ for day in sorted(btc):
 save_history(history)
 print(f"{len(history)} rows in history; latest: {max(history)} "
       f"ratio {history[max(history)]['ratio']}")
+
+MA_WINDOW = 50
+
+days = sorted(history)                       # chronological list of date strings
+ratios = [float(history[d]["ratio"]) for d in days]
+
+ma = []
+for i in range(len(ratios)):
+    if i + 1 < MA_WINDOW:
+        ma.append(None)                      # not enough history yet
+    else:
+        window = ratios[i + 1 - MA_WINDOW : i + 1]
+        ma.append(round(sum(window) / MA_WINDOW, 4))
+
+latest_ratio = ratios[-1]
+latest_ma = ma[-1]
+state = "above" if latest_ratio > latest_ma else "below"
+
+output = {
+    "updated": days[-1],
+    "ma_window": MA_WINDOW,
+    "latest": {"ratio": latest_ratio, "ma": latest_ma, "state": state},
+    "series": [{"date": d, "ratio": r, "ma": m}
+               for d, r, m in zip(days, ratios, ma)],
+}
+
+with open("data.js", "w") as f:
+    f.write("const DATA = " + json.dumps(output, indent=2) + ";\n")
+
+print(f"{days[-1]}: ratio {latest_ratio:.4f}, MA{MA_WINDOW} {latest_ma:.4f} -> {state}")
