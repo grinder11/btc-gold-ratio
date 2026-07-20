@@ -14,20 +14,28 @@
     background: var(--bg); color: var(--ink);
     font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
     min-height: 100vh; display: grid; place-items: center; padding: 1.5rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
   }
   .card {
-    background: var(--panel); border: 1px solid #30363d; border-radius: 14px;
+    background: rgba(22, 27, 34, 0.35);        /* was solid --panel; now 35% opacity */
+    backdrop-filter: blur(8px);                 /* frosts whatever's behind it */
+    -webkit-backdrop-filter: blur(8px);         /* Safari needs the prefix */
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
     padding: 2.5rem 3rem; text-align: center; max-width: 34rem; width: 100%;
   }
   #art-layer {
     position: fixed; inset: 0; z-index: -1;
     background-size: cover; background-position: center;
-    opacity: 0.35; transition: opacity 1s ease;
+    opacity: 1;                                 /* was 0.35 — show it fully now */
   }
   .eyebrow { color: var(--muted); letter-spacing: 0.15em;
              text-transform: uppercase; font-size: 0.75rem; }
-  .state { font-size: clamp(3rem, 12vw, 5.5rem); font-weight: 700;
-           line-height: 1.05; margin: 0.5rem 0; text-transform: uppercase; }
+  .state {
+    font-size: clamp(3rem, 12vw, 5.5rem); font-weight: 700;
+    line-height: 1.05; margin: 0.5rem 0; text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  }
   .state.above { color: var(--above); }
   .state.below { color: var(--below); }
   .sub { color: var(--muted); font-size: 0.95rem; }
@@ -129,6 +137,8 @@
     });
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
+    ctx.shadowColor = "rgba(0,0,0,0.7)";
+    ctx.shadowBlur = 3;
     ctx.stroke();
   }
 
