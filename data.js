@@ -2,8 +2,8 @@ const DATA = {
   "updated": "2026-07-20",
   "ma_window": 50,
   "latest": {
-    "ratio": 16.1108,
-    "ma": 15.1932,
+    "ratio": 16.1732,
+    "ma": 15.1945,
     "state": "above"
   },
   "art": {
@@ -1279,8 +1279,8 @@ const DATA = {
     },
     {
       "date": "2026-07-20",
-      "ratio": 16.1108,
-      "ma": 15.1932
+      "ratio": 16.1732,
+      "ma": 15.1945
     }
   ]
 };
