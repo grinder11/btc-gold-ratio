@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BTC / Gold Ratio</title>
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b22; --ink: #e6edf3;
+    --muted: #7d8590; --above: #3fb950; --below: #f85149;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+    min-height: 100vh; display: grid; place-items: center; padding: 1.5rem;
+  }
+  .card {
+    background: var(--panel); border: 1px solid #30363d; border-radius: 14px;
+    padding: 2.5rem 3rem; text-align: center; max-width: 34rem; width: 100%;
+  }
+  .eyebrow { color: var(--muted); letter-spacing: 0.15em;
+             text-transform: uppercase; font-size: 0.75rem; }
+  .state { font-size: clamp(3rem, 12vw, 5.5rem); font-weight: 700;
+           line-height: 1.05; margin: 0.5rem 0; text-transform: uppercase; }
+  .state.above { color: var(--above); }
+  .state.below { color: var(--below); }
+  .sub { color: var(--muted); font-size: 0.95rem; }
+  .figures { display: flex; justify-content: center; gap: 2.5rem;
+             margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #30363d; }
+  .figure .label { color: var(--muted); font-size: 0.7rem;
+                   letter-spacing: 0.1em; text-transform: uppercase; }
+  .figure .value { font-size: 1.6rem; margin-top: 0.25rem; }
+  .stamp { color: var(--muted); font-size: 0.75rem; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <p class="eyebrow">BTC / Gold ratio</p>
+    <h1 id="state" class="state">—</h1>
+    <p id="sub" class="sub">loading…</p>
+    <div class="figures">
+      <div class="figure">
+        <div class="label">Ratio</div>
+        <div id="ratio" class="value">—</div>
+      </div>
+      <div class="figure">
+        <div class="label" id="ma-label">MA</div>
+        <div id="ma" class="value">—</div>
+      </div>
+    </div>
+    <p id="stamp" class="stamp"></p>
+  </main>
+
+  <script src="data.js"></script>
+  <script>
+    const { latest, ma_window, updated } = DATA;
+
+    const stateEl = document.getElementById("state");
+    stateEl.textContent = latest.state;
+    stateEl.classList.add(latest.state);
+
+    document.getElementById("sub").textContent =
+      `Ratio is ${latest.state} its ${ma_window}-day moving average`;
+    document.getElementById("ratio").textContent = latest.ratio.toFixed(4);
+    document.getElementById("ma-label").textContent = `MA ${ma_window}`;
+    document.getElementById("ma").textContent = latest.ma.toFixed(4);
+    document.getElementById("stamp").textContent = `Updated ${updated}`;
+  </script>
+</body>
+</html>
