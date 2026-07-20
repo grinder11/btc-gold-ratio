@@ -32,6 +32,7 @@
                    letter-spacing: 0.1em; text-transform: uppercase; }
   .figure .value { font-size: 1.6rem; margin-top: 0.25rem; }
   .stamp { color: var(--muted); font-size: 0.75rem; margin-top: 1.5rem; }
+  .chart { width: 100%; height: auto; margin-top: 2rem; display: block; }
 </style>
 </head>
 <body>
@@ -49,6 +50,7 @@
         <div id="ma" class="value">—</div>
       </div>
     </div>
+    <canvas id="chart" class="chart" width="720" height="360"></canvas>
     <p id="stamp" class="stamp"></p>
   </main>
 
@@ -66,6 +68,75 @@
     document.getElementById("ma-label").textContent = `MA ${ma_window}`;
     document.getElementById("ma").textContent = latest.ma.toFixed(4);
     document.getElementById("stamp").textContent = `Updated ${updated}`;
+    const series = DATA.series.filter(d => d.ma !== null);
+
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const padL = 52, padR = 12, padT = 12, padB = 28;   // gutters for axis labels
+
+  const values = series.flatMap(d => [d.ratio, d.ma]);
+  const lo = Math.min(...values), hi = Math.max(...values);
+
+  const x = i => padL + (i / (series.length - 1)) * (W - padL - padR);
+  const y = v => H - padB - ((v - lo) / (hi - lo)) * (H - padT - padB);
+
+  ctx.font = "11px ui-monospace, monospace";
+  ctx.fillStyle = "#7d8590";
+
+  // y-axis: 4 gridlines + price labels
+  const yTicks = 4;
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+  for (let t = 0; t <= yTicks; t++) {
+    const v = lo + (hi - lo) * (t / yTicks);
+    const py = y(v);
+    ctx.strokeStyle = "#21262d";                 // faint gridline
+    ctx.beginPath();
+    ctx.moveTo(padL, py);
+    ctx.lineTo(W - padR, py);
+    ctx.stroke();
+    ctx.fillText(v.toFixed(1), padL - 8, py);    // label in left gutter
+  }
+
+  // x-axis: 5 date labels sampled across the range
+  const xTicks = 5;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  for (let t = 0; t <= xTicks; t++) {
+    const i = Math.round((series.length - 1) * (t / xTicks));
+    const label = series[i].date.slice(5);       // "MM-DD" from "YYYY-MM-DD"
+    ctx.fillText(label, x(i), H - padB + 8);
+  }
+
+  function line(key, color, width) {
+    ctx.beginPath();
+    series.forEach((d, i) => {
+      const px = x(i), py = y(d[key]);
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    });
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.stroke();
+  }
+
+  // regime fill
+  series.forEach((d, i) => {
+    if (i === 0) return;
+    const prev = series[i - 1];
+    ctx.beginPath();
+    ctx.moveTo(x(i - 1), y(prev.ratio));
+    ctx.lineTo(x(i),     y(d.ratio));
+    ctx.lineTo(x(i),     y(d.ma));
+    ctx.lineTo(x(i - 1), y(prev.ma));
+    ctx.closePath();
+    ctx.fillStyle = d.ratio >= d.ma
+      ? "rgba(63,185,80,0.15)" : "rgba(248,81,73,0.15)";
+    ctx.fill();
+  });
+
+  line("ma", "#7d8590", 1);
+  line("ratio", "#e6edf3", 2);
   </script>
 </body>
 </html>
