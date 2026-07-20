@@ -53,7 +53,7 @@
   .figure .label { color: var(--ink); font-size: 0.7rem;
                    letter-spacing: 0.1em; text-transform: uppercase; }
   .figure .value { font-size: 1.6rem; margin-top: 0.25rem; }
-  .stamp { color: var(--muted); font-size: 0.75rem; margin-top: 1.5rem; }
+  .stamp { color: var(--ink); font-size: 0.75rem; margin-top: 1.5rem; }
   .chart { width: 100%; height: auto; margin-top: 2rem; display: block; }
 </style>
 </head>
@@ -82,10 +82,18 @@
     const { latest, ma_window, updated } = DATA;
 
     const pool = DATA.art[latest.state] || [];
-      if (pool.length > 0) {
-        const pick = pool[Math.floor(Math.random() * pool.length)];
-        document.getElementById("art-layer").style.backgroundImage = `url("${pick}")`;
-      }
+  const artLayer = document.getElementById("art-layer");
+
+  function showRandomArt() {
+    if (pool.length === 0) return;
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    artLayer.style.backgroundImage = `url("${pick}")`;
+  }
+
+  showRandomArt();                         // first image immediately on load
+  if (pool.length > 1) {
+    setInterval(showRandomArt, 3000);     // then a new random one every 10s
+  }
 
     const stateEl = document.getElementById("state");
     stateEl.textContent = latest.state;
@@ -111,7 +119,7 @@
   const y = v => H - padB - ((v - lo) / (hi - lo)) * (H - padT - padB);
 
   ctx.font = "11px ui-monospace, monospace";
-  ctx.fillStyle = "#7d8590";
+  ctx.fillStyle = "#e6edf3";
 
   // y-axis: 4 gridlines + price labels
   const yTicks = 4;
